@@ -1,0 +1,45 @@
+# PayCore HR on Fly.io — deployed automatically by .github/workflows/fly-deploy.yml
+# One Fly app per client. Change `app` to a unique name (lowercase letters, digits, dashes),
+# e.g. "paycore-acme". The site will be https://<app>.fly.dev
+app = "payroll"
+
+# lhr = London: usually the fastest Fly region from Nigeria/West Africa.
+# Other options: jnb (Johannesburg), ams (Amsterdam), fra (Frankfurt). Pick BEFORE the first deploy —
+# the data volume is created in this region and cannot move.
+primary_region = "lhr"
+
+kill_signal = "SIGTERM"
+kill_timeout = "10s"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "4070"
+  DATA_DIR = "/data"
+  NODE_ENV = "production"
+
+# The SQLite database lives on this persistent volume (Fly takes daily snapshots, kept 5 days).
+[mounts]
+  source = "paycore_data"
+  destination = "/data"
+  initial_size = "1gb"
+
+[http_service]
+  internal_port = 4070
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

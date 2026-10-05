@@ -1,0 +1,15 @@
+{
+  "name": "paycore-hr",
+  "version": "1.2.2",
+  "description": "White-label, multi-country payroll & HR portal with employee self-service",
+  "main": "server.js",
+  "private": true,
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/engine.test.js tests/storage.test.js",
+    "reset-demo": "node -e \"const fs=require('fs');for(const f of ['paycore.db','paycore.db-wal','paycore.db-shm'])try{fs.unlinkSync('data/'+f)}catch{}\""
+  }
+}

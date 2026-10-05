@@ -1,0 +1,8 @@
+data/
+node_modules/
+tests/
+.github/
+.git
+*.log
+*.md
+*.zip
